@@ -1,0 +1,8 @@
+[hotreload]
+  suffixes = [".go"]
+  ignore = []
+
+[admob]
+  #广告单元 ID 分配给此广告单元的唯一 ID。使用此 ID 可在您的应用中设置广告单元。(SDC奖励)
+  unitId = "ca-app-pub-7045738606491641/2970068722"
+

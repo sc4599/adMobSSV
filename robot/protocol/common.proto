@@ -1,0 +1,69 @@
+syntax = "proto3";
+package protocol;
+
+// 命令标识
+enum Cmd {
+    option allow_alias = true;
+// 系统命令
+    Invalid = 0;
+    Login = 10001;
+    Login2 = 10001;
+
+
+    Create = 10002;
+    Join = 10003;
+    UpdateStatus = 10100;
+
+
+}
+
+enum App {
+    None = 0;
+    System = 1;
+    NiuNiu = 2;
+    HuLuYu = 3;
+}
+
+// 命令头
+message MsgHead {
+    App app_id = 1;
+    Cmd cmd_id = 2;
+    bytes body = 3;
+}
+
+// 响应状态码
+enum RespCode {
+    FAILURE = 0;    // 失败
+    SUCCESS = 1;    // 成功
+    FAILURE_UNKNOWN = 2; // 未知错误
+    FAILURE_SERVER = 3; // 服务器错误
+}
+
+// 响应头
+message RespBodyHead {
+    RespCode code = 1;
+    string error = 2;
+}
+
+// 登录游戏请求
+message LoginReq {
+    string token = 1;
+}
+
+// 登录游戏响应
+message LoginResp {
+    protocol.RespCode code = 1;
+    string error = 2;
+}
+
+// 创建房间请求
+message CreateReq {
+    int64 options = 1;
+}
+
+// 创建房间请求
+message CreateResp {
+    protocol.RespCode code = 1;
+    string error = 2;
+    string room_no = 3;
+}

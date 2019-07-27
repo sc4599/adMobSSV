@@ -44,7 +44,7 @@ func Verification(sinParams string,sinByte []byte) bool{
 
 	// 拿公钥加密后的签名和url上的签名进行比对
 	if err := v.Verify(a, sinByte); err != nil {
-		log.Fatal("signature verification failed")
+		log.Println("signature verification failed")
 		return false
 	}
 	// 验证通过

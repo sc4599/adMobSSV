@@ -14,6 +14,10 @@ func AdMobSuccessGetHandler(ctx iris.Context){
 	fmt.Println("GetReferrer type=",r.Type)
 	queryStr := ctx.Request().URL.RawQuery
 	fmt.Println("queryStr=",queryStr)
+	if !strings.Contains(queryStr, "&signature="){
+		_, _ = ctx.JSON(ApiResource(2, nil, "signature pas error"))
+		return
+	}
 	sinParams := queryStr[0:strings.Index(queryStr, "&signature=")]
 	fmt.Println("sinParams=",sinParams)
 

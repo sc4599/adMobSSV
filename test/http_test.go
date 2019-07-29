@@ -23,3 +23,39 @@ func TestADMob(t *testing.T) {
 
 }
 
+func TestMap(t *testing.T) {
+	a := map[string]interface{}{
+		"name":"song",
+		"age":"13",
+	}
+	b := []map[string]interface{}{}
+	b=append(b,a)
+	for k,v:= range b {
+		fmt.Println(k,v)
+	}
+}
+
+func TestChan(t *testing.T) {
+	ch4 := make(chan int, 1)
+	for i := 0; i < 4; i++ {
+		select {
+		case e, ok := <-ch4:
+			if !ok {
+				fmt.Println("End.")
+				return
+			}
+			fmt.Println(e)
+			close(ch4)
+
+		default:
+			fmt.Println("No Data!")
+			ch4<-1
+		}
+	}
+}
+
+func TestDefer(t *testing.T) {
+	for i := 1; i < 5; i++ {
+		defer fmt.Println(i)
+	}
+}

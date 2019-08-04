@@ -1,8 +1,9 @@
-package test
+package main
 
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"testing"
 )
@@ -59,3 +60,39 @@ func TestDefer(t *testing.T) {
 		defer fmt.Println(i)
 	}
 }
+
+func TestMap2(t *testing.T) {
+	m:= make(map[int]bool, 2)
+	m[1]=true
+	m[2]=false
+	fmt.Println(m)
+	m[3]=true
+	fmt.Println(m)
+}
+
+func TestDefer2(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		fmt.Printf("%d ", fibonacci(i))
+		defer func(n int){
+			fmt.Printf("%d ",n)
+		}(fibonacci(i))
+	}
+}
+func fibonacci(num int) int {
+	if num == 0 {
+		return 0
+	}
+	if num < 2 {
+		return 1
+	}
+	return fibonacci(num-1) + fibonacci(num-2)
+}
+
+func TestRandom(t *testing.T) {
+	for i:=0;i<100;i++{
+		d :=rand.Intn(100)
+		fmt.Println(d)
+	}
+
+}
+

@@ -20,9 +20,12 @@ type WinRate struct {
 @return int64		0: 不出发必杀， 1：出发必杀
  */
 func (t *WinRate)Check(userTotalBet int64)int64{
+	if t.IsOn == 0{
+		return 0
+	}
 	t.getKillRate(userTotalBet)
 	currPoint := int64(rand.Intn(100))// 通过随机检查此环节是否出发必杀
-	if currPoint <= t.KillRate{
+	if currPoint < t.KillRate{
 		return 1
 	}
 	return 0
@@ -30,7 +33,7 @@ func (t *WinRate)Check(userTotalBet int64)int64{
 
 func (t *WinRate)getKillRate(userTotalBet int64){
 	for _,v := range t.betLevel{
-		if userTotalBet > v{
+		if userTotalBet >= v{
 			t.KillRate = t.Rate[v]
 			return
 		}

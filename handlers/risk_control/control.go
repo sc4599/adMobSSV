@@ -1,9 +1,10 @@
 package risk_control
 
 import (
-	"encoding/json"
-	"github.com/viphxin/xingo/logger"
 	"awesomeProject/extension/global/redis"
+	"encoding/json"
+	"fmt"
+	"github.com/viphxin/xingo/logger"
 )
 
 type RiskControl struct {
@@ -23,7 +24,12 @@ func NewRiskControl (appId int64) RiskControl{
 @params currBet int64, 当前轮真实玩家总下注
 @params currSysWin int64	当前轮系统输赢
 */
-func (t *RiskControl)ResetRiskControlByRoundEnd(currBet int64, currSysWin int64)int64{
+func (t *RiskControl)ResetRiskControlByRoundEnd(currBet int64, currWin, currLost int64)int64{
+	defer func() {
+		if err := recover(); err != nil {
+			logger.Error(fmt.Sprintf("ResetRiskControlByRoundEnd err: %v", err))
+		}
+	}()
 	// 从redis获取开关状态
 	if r:=t.setSwitchFromRedis();r!=0{
 		return 1
@@ -31,7 +37,7 @@ func (t *RiskControl)ResetRiskControlByRoundEnd(currBet int64, currSysWin int64)
 	if r:=t.setControlConf();r!=0{
 		return r
 	}
-	t.recordMsg(currBet, currSysWin)
+	t.recordMsg(currBet, currWin, currLost)
 	return 0
 }
 
@@ -41,6 +47,11 @@ func (t *RiskControl)ResetRiskControlByRoundEnd(currBet int64, currSysWin int64)
 @return int64   0:表示正常随机， 1：杀大开小， 2：杀小开大
 */
 func (t *RiskControl)CheckRiskTrigger(userTotalBet int64)(int64, string){
+	defer func() {
+		if err := recover(); err != nil {
+			logger.Error(fmt.Sprintf("CheckRiskTrigger err: %v", err))
+		}
+	}()
 	r0:= t.gameStock.CheckContinuousTriggering()
 	if r0!=0{
 		logger.Debug("CheckRiskTrigger gameStock CheckContinuousTriggering Trigger kill")
@@ -121,8 +132,9 @@ func (t *RiskControl) setControlConf() int64{
 }
 
 // 每轮上报玩家总押注 和 系统输赢 给风控
-func (t *RiskControl)recordMsg(currBet int64, currSysWin int64){
-	t.betWinRate.recordSysWin(currBet, currSysWin)
+func (t *RiskControl)recordMsg(currBet int64, currWin, currLost  int64){
+	t.betWinRate.recordSysWin(currBet, currWin-currLost)
+	t.gameStock.record(currBet, currWin, currLost,t.AppId)
 }
 
 

@@ -226,11 +226,11 @@ func GetBetWinRateConf(appId int64)(map[string]interface{}, error){
 	}
 	return r, nil
 }
-// 风险控制  获取投注盈利比 配置
+// 风险控制  库存控制 配置
 func GetGameStock(appId int64)(map[string]interface{}, error){
 	rc := global.RedisPool.Get()
 	args := redis.Args{fmt.Sprintf("%s:%d", define.KEY_RISK_CONTROL, appId)}
-	args = args.Add("BetWinRate")
+	args = args.Add("GameStock")
 	options, err := redis.Bytes(rc.Do("HGET",args...))
 	if err!=nil && err!= redis.ErrNil {
 		return nil, err
@@ -238,4 +238,38 @@ func GetGameStock(appId int64)(map[string]interface{}, error){
 	r := make(map[string]interface{})
 	_ = json.Unmarshal(options, &r)
 	return r, nil
+}
+// 风险控制  获取库存奖池
+func GetGameStockPool(appId int64)(map[string]interface{}, error){
+	rc := global.RedisPool.Get()
+	args := redis.Args{fmt.Sprintf("%s:%d", define.KEY_RISK_CONTROL, appId)}
+	args = args.Add("GameStockPool")
+	options, err := redis.Bytes(rc.Do("HGET",args...))
+	if err!=nil && err!= redis.ErrNil {
+		return nil, err
+	}
+	r := make(map[string]interface{})
+	_ = json.Unmarshal(options, &r)
+	return r, nil
+}
+
+// 风险控制  重设置库存奖池
+func SetGameStockPool(appId, currStock,totalPump int64)error{
+	s:= map[string]interface{}{
+		"TotalPumpAmount": totalPump,
+		"CurrStock": currStock,
+	}
+	if rs,err := json.Marshal(s);err==nil{
+		rc := global.RedisPool.Get()
+		args := redis.Args{fmt.Sprintf("%s:%d", define.KEY_RISK_CONTROL, appId)}
+		args = args.Add("GameStockPool").AddFlat(string(rs))
+		ok, err := rc.Do("hmset", args...)
+		if ok != "OK" {
+			logger.Error("SetGameStockPool err=", err)
+			return err
+		}
+	}else{
+		return err
+	}
+	return nil
 }

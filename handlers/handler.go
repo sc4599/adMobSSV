@@ -71,24 +71,30 @@ func GetRiskControl(ctx iris.Context){
 		r2:=model.Rc.DebugGameStockInfo()
 		r3:=model.Rc.DebugBetWinRateInfo()
 		r4:=model.Rc.DebugWinRateInfo()
-		_, _ = ctx.Text(r1+"【"+trigger+"】\n"+r2 +"\n" + r3+"\n" + r4)
+		_, _ = ctx.Text(r1+"【"+trigger+"】\n"+r4 +"\n" + r3+"\n" + r2)
 	}
 }
 
 func NextRound(ctx iris.Context){
 	currBet :=ctx.Request().FormValue("currBet")
-	currSysWin :=ctx.Request().FormValue("currSysWin")
+	currWin :=ctx.Request().FormValue("currWin")
+	currLost :=ctx.Request().FormValue("currLost")
 	bet,err:=strconv.Atoi(currBet)
 	if err!=nil{
 		_, _ = ctx.Text("bet格式错误,必须是一个正整数")
 		return
 	}
-	sysWin,err:=strconv.Atoi(currSysWin)
+	win,err:=strconv.Atoi(currWin)
 	if err!=nil{
 		_, _ = ctx.Text("bet格式错误,必须是一个正整数")
 		return
 	}
-	r:=model.Rc.ResetRiskControlByRoundEnd(int64(bet),int64(sysWin))
+	lost,err:=strconv.Atoi(currLost)
+	if err!=nil{
+		_, _ = ctx.Text("bet格式错误,必须是一个正整数")
+		return
+	}
+	r:=model.Rc.ResetRiskControlByRoundEnd(int64(bet),int64(win),int64(lost))
 	switch r {
 	case 1:
 		_, _ = ctx.Text("Switch get error")

@@ -30,11 +30,18 @@ type BetWinRate struct {
 
 
 func (t *BetWinRate)Check()int64{
+	if t.IsOn == 0{
+		return 0
+	}
+	// 如果此时达到大周期则，不出发任何 投注盈利比控制
+	if t.BigCycle !=0 && t.RoundCount % t.BigCycle ==0 {
+		return 0
+	}
 	if t.SmallCycle!=0 && t.RoundCount % t.SmallCycle == 0 {
 		if t.CumulativeSysWin < 0 { // 当系统输赢数量为负数 则一定出发最大必杀率
 			currPoint := int64(rand.Intn(100))// 通过随机检查此环节是否出发必杀
 			t.KillRate = t.Rate[t.betWinRateLevel[len(t.betWinRateLevel)-1]]
-			if currPoint <= t.KillRate{
+			if currPoint < t.KillRate{
 				return 1
 			}
 		}
@@ -44,7 +51,7 @@ func (t *BetWinRate)Check()int64{
 			if betWinRate > v{
 				currPoint := int64(rand.Intn(100))// 通过随机检查此环节是否出发必杀
 				t.KillRate = t.Rate[t.betWinRateLevel[0]]
-				if currPoint <= t.KillRate {
+				if currPoint < t.KillRate {
 					return 1
 				}
 			}

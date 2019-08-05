@@ -90,7 +90,7 @@ func fibonacci(num int) int {
 
 func TestRandom(t *testing.T) {
 	for i:=0;i<100;i++{
-		d :=rand.Intn(100)
+		d :=rand.Intn(101)
 		fmt.Println(d)
 	}
 

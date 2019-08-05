@@ -24,7 +24,7 @@ func (t *WinRate)Check(userTotalBet int64)int64{
 		return 0
 	}
 	t.getKillRate(userTotalBet)
-	currPoint := int64(rand.Intn(100))// 通过随机检查此环节是否出发必杀
+	currPoint := int64(rand.Intn(101))// 通过随机检查此环节是否出发必杀
 	if currPoint < t.KillRate{
 		return 1
 	}

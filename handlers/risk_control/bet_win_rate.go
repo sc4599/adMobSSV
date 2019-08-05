@@ -39,7 +39,7 @@ func (t *BetWinRate)Check()int64{
 	}
 	if t.SmallCycle!=0 && t.RoundCount % t.SmallCycle == 0 {
 		if t.CumulativeSysWin < 0 { // 当系统输赢数量为负数 则一定出发最大必杀率
-			currPoint := int64(rand.Intn(100))// 通过随机检查此环节是否出发必杀
+			currPoint := int64(rand.Intn(101))// 通过随机检查此环节是否出发必杀
 			t.KillRate = t.Rate[t.betWinRateLevel[len(t.betWinRateLevel)-1]]
 			if currPoint < t.KillRate{
 				return 1
@@ -49,7 +49,7 @@ func (t *BetWinRate)Check()int64{
 		betWinRate := t.CumulativeSysWin / t.CumulativeBet * 100
 		for _, v:= range t.betWinRateLevel{
 			if betWinRate > v{
-				currPoint := int64(rand.Intn(100))// 通过随机检查此环节是否出发必杀
+				currPoint := int64(rand.Intn(101))// 通过随机检查此环节是否出发必杀
 				t.KillRate = t.Rate[t.betWinRateLevel[0]]
 				if currPoint < t.KillRate {
 					return 1

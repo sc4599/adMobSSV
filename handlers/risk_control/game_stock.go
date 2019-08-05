@@ -47,7 +47,7 @@ func (t *GameStock) CheckContinuousTriggering() int64 {
 		return 0
 	}
 	if t.CurrKeepRound>0{
-		currPoint := int64(rand.Intn(100))// 通过随机检查此环节是否出发必杀
+		currPoint := int64(rand.Intn(101))// 通过随机检查此环节是否出发必杀
 		if t.KillRate > 0{
 			if currPoint < t.KillRate{
 				return 1

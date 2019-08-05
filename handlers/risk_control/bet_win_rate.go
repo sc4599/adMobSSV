@@ -114,9 +114,17 @@ func (t *BetWinRate)setSelfConf(appId int64) int64{
 
 // 重置大周期，  初始化 游戏轮数 重新随机获取 大周期 小周期， 初始化累计下注 和 累计系统输赢
 func (t *BetWinRate)resetBigCycle(){
-	t.RoundCount = 1
-	t.BigCycle = t.MinBigCycle + int64(rand.Intn(int(t.MaxBigCycle - t.MinBigCycle)))
-	t.SmallCycle = t.MinSmallCycle + int64(rand.Intn(int(t.MaxSmallCycle - t.MinSmallCycle)))
+	t.RoundCount = 0
+	if t.MaxBigCycle - t.MinBigCycle <= 0{
+		t.BigCycle = t.MaxSmallCycle
+	}else{
+		t.BigCycle = t.MinBigCycle + int64(rand.Intn(int(t.MaxBigCycle - t.MinBigCycle)))
+	}
+	if t.MaxSmallCycle - t.MinSmallCycle <= 0 {
+		t.SmallCycle = t.MaxSmallCycle
+	}else{
+		t.SmallCycle = t.MinSmallCycle + int64(rand.Intn(int(t.MaxSmallCycle - t.MinSmallCycle)))
+	}
 	if t.BigCycle == 0 || t.SmallCycle==0{
 		t.BigCycle =1
 		t.SmallCycle=1

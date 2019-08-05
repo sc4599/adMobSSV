@@ -125,7 +125,11 @@ func (t *GameStock) record(currBet, currWin, currLost int64, appId int64) {
 			t.KillRate = int64(t.Rate[0]["KillRate"].(float64))
 			minKeepRound := int64(t.Rate[0]["MinKeepRound"].(float64))
 			maxKeepRound := int64(t.Rate[0]["MaxKeepRound"].(float64))
-			t.CurrKeepRound = minKeepRound + int64(rand.Intn(int(maxKeepRound-minKeepRound)))
+			if maxKeepRound-minKeepRound <= 0{
+				t.CurrKeepRound = maxKeepRound
+			}else{
+				t.CurrKeepRound = minKeepRound + int64(rand.Intn(int(maxKeepRound-minKeepRound)))
+			}
 		}else{
 			for i,v := range t.StockLevel{
 				if t.CurrStock < int64(v.(float64)){
@@ -133,6 +137,11 @@ func (t *GameStock) record(currBet, currWin, currLost int64, appId int64) {
 					minKeepRound := int64(t.Rate[i]["MinKeepRound"].(float64))
 					maxKeepRound := int64(t.Rate[i]["MaxKeepRound"].(float64))
 					t.CurrKeepRound = minKeepRound + int64(rand.Intn(int(maxKeepRound-minKeepRound)))
+					if maxKeepRound-minKeepRound <=0 {
+						t.CurrKeepRound = maxKeepRound
+					}else{
+						t.CurrKeepRound = minKeepRound + int64(rand.Intn(int(maxKeepRound-minKeepRound)))
+					}
 				}
 			}
 		}

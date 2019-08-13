@@ -118,10 +118,13 @@ func (t *GameStock) record(currBet, currWin, currLost int64, appId int64) {
 	t.CurrStock += currSysWin                                       // 累加当前库存
 	t.TotalPump += currPump                                         // 累加当前轮系统扣除数量
 	t.RoundCount += 1                                               // 开关打开到现在储蓄多少轮
-	if t.CurrKeepRound > 0 {
+	if t.CurrKeepRound > 1 {
 		t.CurrKeepRound -= 1
 	}else{
-		if t.CurrStock >= int64(t.StockLevel[len(t.StockLevel)-1].(float64)){  // >14000
+		if t.CurrStock <= t.MinStock{
+			t.KillRate = 100
+			t.CurrKeepRound = t.KeepRound
+		}else if t.CurrStock >= int64(t.StockLevel[len(t.StockLevel)-1].(float64)){  // >14000
 			t.KillRate = int64(t.Rate[0]["KillRate"].(float64))
 			minKeepRound := int64(t.Rate[0]["MinKeepRound"].(float64))
 			maxKeepRound := int64(t.Rate[0]["MaxKeepRound"].(float64))

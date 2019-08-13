@@ -116,7 +116,7 @@ func (t *BetWinRate)setSelfConf(appId int64) int64{
 func (t *BetWinRate)resetBigCycle(){
 	t.RoundCount = 0
 	if t.MaxBigCycle - t.MinBigCycle <= 0{
-		t.BigCycle = t.MaxSmallCycle
+		t.BigCycle = t.MaxBigCycle
 	}else{
 		t.BigCycle = t.MinBigCycle + int64(rand.Intn(int(t.MaxBigCycle - t.MinBigCycle)))
 	}

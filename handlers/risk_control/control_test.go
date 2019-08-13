@@ -1,10 +1,10 @@
 package risk_control
 
 import (
+	"awesomeProject/extension/global"
 	"fmt"
 	"math"
 	"testing"
-	"awesomeProject/extension/global"
 )
 
 func TestNewRiskControl(t *testing.T) {
@@ -17,7 +17,6 @@ func TestNewRiskControl(t *testing.T) {
 		r,_ := rc.CheckRiskTrigger(2000)
 		fmt.Println("RsikControl r=",r)
 	}
-
 }
 
 func TestABS(t *testing.T) {

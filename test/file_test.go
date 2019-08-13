@@ -1,10 +1,12 @@
 package main
 
 import (
+	"awesomeProject/robot/protocol"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 func readFile(path string) ([]byte, error) {
@@ -37,3 +39,15 @@ func TestFile(t *testing.T) {
 	proecss()
 
 }
+
+type Handler struct {
+	Method reflect.Method // 方法
+	Type   reflect.Type   // 第二个参数类型
+}
+type SitHandler struct {
+
+}
+func (t *SitHandler)Execute(user, req *protocol.MsgHead){
+	fmt.Println("req no =", req.AppId)
+}
+

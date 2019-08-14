@@ -173,6 +173,7 @@ func SetSession(userId string, r []byte) error {
 // 获取用户状态 没有数据不返回error
 func GetUserStateMap(uid uint64) (map[string]string, error) {
 	rc := global.RedisPool.Get()
+	defer rc.Close()
 	options, err := redis.StringMap(rc.Do("hgetall",
 		redis.Args{fmt.Sprintf("%s:%d", define.KEY_USER_STATE, uid)}...))
 	if err != nil && err != redis.ErrNil {
@@ -185,6 +186,7 @@ func GetUserStateMap(uid uint64) (map[string]string, error) {
 // 风险控制  获取所有风控开关
 func GetRiskSwitch(appId int64)(map[string]int64, error){
 	rc := global.RedisPool.Get()
+	defer rc.Close()
 	args := redis.Args{fmt.Sprintf("%s:%d", define.KEY_RISK_CONTROL, appId)}
 	args = args.Add("Switch")
 	options, err := redis.Bytes(rc.Do("HGET",args...))
@@ -199,6 +201,7 @@ func GetRiskSwitch(appId int64)(map[string]int64, error){
 // 风险控制  获取胜率控制 的胜率
 func GetWinRateConf(appId int64)(map[string]interface{}, error){
 	rc := global.RedisPool.Get()
+	defer rc.Close()
 	args := redis.Args{fmt.Sprintf("%s:%d", define.KEY_RISK_CONTROL, appId)}
 	args = args.Add("WinRate")
 	options, err := redis.Bytes(rc.Do("HGET",args...))
@@ -212,6 +215,7 @@ func GetWinRateConf(appId int64)(map[string]interface{}, error){
 // 风险控制  获取投注盈利比 配置
 func GetBetWinRateConf(appId int64)(map[string]interface{}, error){
 	rc := global.RedisPool.Get()
+	defer rc.Close()
 	args := redis.Args{fmt.Sprintf("%s:%d", define.KEY_RISK_CONTROL, appId)}
 	args = args.Add("BetWinRate")
 	options, err := redis.Bytes(rc.Do("HGET",args...))
@@ -229,6 +233,7 @@ func GetBetWinRateConf(appId int64)(map[string]interface{}, error){
 // 风险控制  库存控制 配置
 func GetGameStock(appId int64)(map[string]interface{}, error){
 	rc := global.RedisPool.Get()
+	defer rc.Close()
 	args := redis.Args{fmt.Sprintf("%s:%d", define.KEY_RISK_CONTROL, appId)}
 	args = args.Add("GameStock")
 	options, err := redis.Bytes(rc.Do("HGET",args...))
@@ -242,6 +247,7 @@ func GetGameStock(appId int64)(map[string]interface{}, error){
 // 风险控制  获取库存奖池
 func GetGameStockPool(appId int64)(map[string]interface{}, error){
 	rc := global.RedisPool.Get()
+	defer rc.Close()
 	args := redis.Args{fmt.Sprintf("%s:%d", define.KEY_RISK_CONTROL, appId)}
 	args = args.Add("GameStockPool")
 	options, err := redis.Bytes(rc.Do("HGET",args...))
@@ -255,12 +261,13 @@ func GetGameStockPool(appId int64)(map[string]interface{}, error){
 
 // 风险控制  重设置库存奖池
 func SetGameStockPool(appId, currStock,totalPump int64)error{
+	rc := global.RedisPool.Get()
+	defer rc.Close()
 	s:= map[string]interface{}{
 		"TotalPumpAmount": totalPump,
 		"CurrStock": currStock,
 	}
 	if rs,err := json.Marshal(s);err==nil{
-		rc := global.RedisPool.Get()
 		args := redis.Args{fmt.Sprintf("%s:%d", define.KEY_RISK_CONTROL, appId)}
 		args = args.Add("GameStockPool").AddFlat(string(rs))
 		ok, err := rc.Do("hmset", args...)

@@ -46,7 +46,7 @@ func (t *BetWinRate)Check()int64{
 			}
 		}
 		// 计算当前 投注盈利比
-		betWinRate := t.CumulativeSysWin / t.CumulativeBet * 100
+		betWinRate := int64(float64(t.CumulativeSysWin) * 100 / float64(t.CumulativeBet))
 		for _, v:= range t.betWinRateLevel{
 			if betWinRate > v{
 				currPoint := int64(rand.Intn(101))// 通过随机检查此环节是否出发必杀

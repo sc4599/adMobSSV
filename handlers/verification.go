@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"crypto/md5"
 	"fmt"
 	"github.com/google/tink/go/keyset"
 	"github.com/google/tink/go/signature"
@@ -70,4 +71,12 @@ func Sin(sinParams string)(signatureStr string, err error){
 	a, err := s.Sign([]byte(sinParams))
 
 	return string(a), nil
+}
+
+
+func Md5V2(str string) string {
+	data := []byte(str)
+	has := md5.Sum(data)
+	md5str := fmt.Sprintf("%x", has)
+	return md5str
 }

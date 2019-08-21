@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/extension/model"
+	"awesomeProject/net"
 	"fmt"
 	"github.com/kataras/iris"
 	"strconv"
@@ -34,17 +35,23 @@ func AdMobSuccessGetHandler(ctx iris.Context){
 	//fmt.Println(ctx.Request().FormValue("transaction_id"))
 	//fmt.Println(ctx.Request().FormValue("user_id"))
 	//fmt.Println(ctx.Request().FormValue("signature"))
-	signature:= ctx.Request().FormValue("signature")
+	//signature:= ctx.Request().FormValue("signature")
 	fmt.Println(ctx.Request().FormValue("key_id"))
-	if Verification(sinParams, []byte(signature)){
+	userId := ctx.Request().FormValue("user_id")
+	customData := ctx.Request().FormValue("custom_data")
+	soul := "cptbtptp"
+	url := "http://127.0.0.1:8889/pay/admobSuccess"
+
+	if Md5V2(userId+soul) == customData{
 		// TODO 此处可以调用游戏服务器的 增加广告激励对应奖励接口
 		adUnitId := Conf.Get("admob.unitId") // 从配置文件获取广告ID
 		fmt.Println("adUnit ID =",adUnitId)
-		// TODO 判断广告单元ID
-		if adUnitId == ctx.Request().FormValue("ad_unit"){
-			// 处理此类广告的激励奖励逻辑
+		data := map[string]interface{}{
+			"user_id": userId,
+			"ad_unit": adUnitId,
 		}
-		_, _ = ctx.JSON(ApiResource(0, nil, "success"))
+		r:=net.Post(url,data, "text/plain")
+		_, _ = ctx.JSON(ApiResource(0, r, "success"))
 	}else{
 		_, _ = ctx.JSON(ApiResource(1, nil, "fail"))
 	}

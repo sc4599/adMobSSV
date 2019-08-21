@@ -11,7 +11,7 @@ var (
 )
 
 func init(){
-	Conf = NewConf()
+	//Conf = NewConf()
 
 }
 

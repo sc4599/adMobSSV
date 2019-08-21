@@ -58,6 +58,24 @@ func AdMobSuccessGetHandler(ctx iris.Context){
 
 }
 
+
+
+func TestAdMobHandler(ctx iris.Context){
+	if ctx.Request().RemoteAddr != "127.0.0.1"{
+		_, _ = ctx.JSON(ApiResource(0, nil, "success1"))
+		return
+	}
+	url := "http://127.0.0.1:8889/pay/admobSuccess"
+	adUnitId := Conf.Get("admob.unitId") // 从配置文件获取广告ID
+	fmt.Println("adUnit ID =",adUnitId)
+	data := map[string]interface{}{
+		"user_id": 1,
+		"ad_unit": adUnitId,
+	}
+	r:=net.Post(url,data, "text/plain")
+	_, _ = ctx.JSON(ApiResource(0, r, "success"))
+
+}
 /*的摄像头
 获取测试
 */
